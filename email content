@@ -1,0 +1,45 @@
+2023/7/3
+如早上所說，我們希望請你幫忙研究債券期貨，以幫助我們債券ETF更有效的避險。
+CME的網站可以看到債券期貨的相關資料
+https://www.cmegroup.com/trading/interest-rates/us-treasury.html
+
+請往下滑找到如下的Education區塊，依我標號的順序讀這些文章
+第一篇是基本觀念，請想辦法看懂，有需要也可以隨時問我。
+我們這個禮拜的目標，就是把你的電腦環境全部設定好，並讀懂這篇文章，具備債券/債券期貨的基本知識。
+這禮拜只要每天口頭回報進度即可
+
+但從第二篇開始，除口頭追蹤進度以外，每一篇都要做簡單的摘要，最好是以投影片的方式呈現。
+要求是把有條例的把內容說明清楚，讓對債券期貨不熟悉的交易員也可以快速了解這篇文章。
+
+2023/7/28
+你已經對債券期貨有基本認識了，接著我們要嘗試使用債券期貨避險。
+請依序進行以下工作，建立一個可以幫助我們計算避險部位的Excel範本。
+也請你每完成一項都先回報並Demo成果，過程中可能會遇到很多問題， 歡迎隨時問我或庭鈞。
+
+1.	債券期貨對應各檔債券的Conversion Factor會不會改變，如果會的話，請找出計算方式
+2.	建立公債期貨的Excel表，並設好 Bloomberg，包括各檔公債期貨的Yield, Modify Duration, DV01, CTD券資訊
+3.	建立債券資料Excel表，並設好Bloomberg公式，欄位為Ticker, Yield, Coupon, 到期日, Modify Duration, DV01, 對應期貨, Conversion Factor
+4.	給定債券清單，用前面兩張表的資料，計算應避險的期貨口數，清單先手動輸入，確定沒問題後我們再串Bloomberg或資料庫的清單進來計算
+
+2023/8/17
+回答核心問題：各天期期貨應分配多少比例避險。
+
+1.	確認使用Conversion Factor作為避險比例的效果
+(1)	我們看可交割債券只有2-3檔的Ultra 10Y，算出近3個月期貨相對這幾檔債券的基差，基差 = (期貨收盤價*CF – 債券收盤價) / 債券收盤價
+(2)	計算這3檔債券在這段期間的基差平均、標準差、最大最小值，並將基差走勢化成折線圖
+
+2.	假設我們持有1億的00679B，檢視使用Conversion Factor避險的效果
+(1)	找出每一檔債券對應的期貨及Conversion Factor，以計算要避險的各檔期貨口數，如912810TR9對應的期貨是UB, CF=0.6734，表示每持有面額$100,000的912810TR9就要用0.6734口UB避險。
+
+    00679B的成分債券從我們資料庫抓比較方便
+    SELECT * FROM [ETFData].[dbo].[PcfUnderlying] WHERE etfid='00679B' and ModDate=20230731
+    或是看元大投信網頁對照
+    https://www.yuantaetfs.com/tradeInfo/pcf/00679B
+
+    債券對照的期貨和Conversion Factor可以去CME找
+    https://www.cmegroup.com/trading/interest-rates/treasury-conversion-factors.html
+    https://www.cmegroup.com/trading/interest-rates/files/TCF.xlsx
+
+(2)	使用以上方式計算這一籃子債券和期貨避險每天的損益變化。
+    請先檢查7月份00679B持有的債券有沒有更換，權重有沒有大幅調整，沒有的話可簡單把投資組合固定成7/1的00679B的成分權重計算，
+    如果期間有大幅調整，看能不能切成調整相對較小的2-3段期間分別計算。
